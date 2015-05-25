@@ -2,7 +2,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="./assets/css/style.css">
-    <title>HTML GL nested content</title>
+    <title>HTML GL filters demo</title>
     <meta name="viewport" content="width=1024 maximum-scale=1.0 minimum-scale=1.0 initial-scale=1.0, user-scalable=no" />
 </head>
 <body>
@@ -12,12 +12,9 @@
         <ul class="menu expanded">
             <li><a target="_blank" href="http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/">ABOUT HTML-GL</a></li>
             <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL">GITHUB REPO</a></li>
-            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL/archive/master.zip">DOWNLOAD</a></li>
         </ul>
         <ul class="submenu">
-            <li>MOVIES</li>
-            <li>TV</li>
-            <li>KIDS</li>
+            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL/archive/master.zip">DOWNLOAD</a></li>
             <li>
                 <!-- AddThis Button BEGIN -->
                 <div class="addthis_toolbox addthis_default_style">
@@ -184,16 +181,41 @@
 <script src="../src/images-loaded.js"></script>
 <script src="../src/gl-element.js"></script>
 <script src="./js/slider.js"></script>
+<script src="./js/vendor/dat.gui.min.js"></script>
 <script>
-    window.addEventListener('load', function () {
-        setTimeout(function () {
-            Velocity(document.getElementsByTagName('html-gl')[0], {translateX: 408}, {duration: 500});
-        }, 500);
-    });
 
-    document.getElementsByTagName('html-gl')[0].addEventListener('htmlglReady', function(e){
-        alert('htmlglReady');
-    });
+    var renderer = window.HTMLGL.renderer;
+
+    var displacementTexture = PIXI.Texture.fromImage("assets/img/displacement_ripples.jpg");
+    var displacementFilter = new PIXI.DisplacementFilter(displacementTexture);
+
+    window.HTMLGL.stage.addChild(window.HTMLGL.document);
+
+    window.HTMLGL.document.filters = [displacementFilter];
+
+    displacementFilter.scale.x = 30;
+    displacementFilter.scale.y = 30;
+
+    var count = 0;
+
+    function animate() {
+
+        count += 0.1;
+
+        displacementFilter.uniforms.dimensions.value.x = displacementFilter.uniforms.dimensions.value.x * count;
+        displacementFilter.uniforms.dimensions.value.y = displacementFilter.uniforms.dimensions.value.y * count;
+
+        //displacementTexture.scale.x = count * 10;
+        //displacementTexture.scale.y = count * 10;
+
+        //displacementFilter.scale.x = count;// * 10;
+        //displacementFilter.scale.y = count;// * 10;
+
+        renderer.render(window.HTMLGL.stage);
+        requestAnimFrame( animate );
+    }
+
+    requestAnimFrame( animate );
 </script>
 </body>
 </html>
