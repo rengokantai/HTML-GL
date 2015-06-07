@@ -51,6 +51,7 @@
             this.glChildsReady = 0;
             this.glParent = this.getGlParent();
 
+            this.initEffects();
             this.bindCallbacks();
             this.transformProperty = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
             this.init();
@@ -137,7 +138,7 @@
             this.initSprite(this.texture);
         } else {
             this.sprite.texture.destroy();
-            this.sprite.setTexture(this.texture);
+            this.sprite.texture = this.texture;
         }
 
         this.updatePivot();
@@ -199,7 +200,7 @@
         var self = this,
             parentSprite = this.glParent && this.glParent.sprite || w.HTMLGL.document;
 
-        this.sprite.setTexture(texture);
+        this.sprite.texture = texture;
         parentSprite.addChild(this.sprite);
 
         setTimeout(function () {
@@ -273,6 +274,12 @@
 
     p.haveSprite = function () {
         return this.sprite.stage;
+    }
+
+    p.initEffects = function () {
+        if (HTMLGL.GLEffectsManager) {
+            this.effectsManager = new HTMLGL.GLEffectsManager(this);
+        }
     }
 
     HTMLGL.GLElement = document.registerElement(HTMLGL.CUSTOM_ELEMENT_TAG_NAME, {
